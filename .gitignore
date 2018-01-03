@@ -1,4 +1,6 @@
 *.cfg
 .cache*
 111*
+
+# Jupyter Notebook
 .ipynb_checkpoints
