@@ -1,3 +1,4 @@
 *.cfg
 .cache*
 111*
+.ipynb_checkpoints
