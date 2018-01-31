@@ -1,3 +1,7 @@
+# this script is to be executed in command line
+# python get_public_playlist.py --playlist=SPOTIFY_PLAYLIST_URI
+
+
 import argparse
 import pprint
 import sys
@@ -84,7 +88,7 @@ def get_playlist_audio_features(sp, user_id, playlist_id):
     df.to_csv('{}-{}.csv'.format(user_id, playlist_id), index=False)
 
 
-def main(username, playlist, playlist_owner, playlist_uri):
+def main(username, playlist):
     print('Performing authentication...')
     config = configparser.ConfigParser()
     config.read('config.cfg')
@@ -102,25 +106,14 @@ def main(username, playlist, playlist_owner, playlist_uri):
 
         current_user= sp.current_user()
 
-        if (playlist_owner and playlist):
-            playlist_id = playlist
-        elif (playlist_uri):
-            split_uri = playlist_uri.split(':')
-            playlist_owner = split_uri[2]
-            playlist_id = split_uri[4]
-        else:
-            playlist_owner = current_user['id']
-            playlist_id = playlist
-        
-
-        # print('Getting user\'s playlists...')
-        # get_user_playlists(sp)
+        print('Getting user\'s playlists...')
+        get_user_playlists(sp)
 
         print('Getting playlist content...')
-        get_playlist_content(sp, playlist_owner, playlist_id)
+        get_playlist_content(sp, current_user['id'], playlist)
 
         print('Getting playlist audio features...')
-        get_playlist_audio_features(sp, playlist_owner, playlist_id)
+        get_playlist_audio_features(sp, current_user['id'], playlist)
     else:
         print( "Can't get token for", username)
 
@@ -129,8 +122,6 @@ if __name__ == '__main__':
     print('Starting...')
     parser = argparse.ArgumentParser(description='description')
     parser.add_argument('--username', help='username')
-    parser.add_argument('--playlist_owner', help='playlist_owner')
     parser.add_argument('--playlist', help='playlist')
-    parser.add_argument('--playlist_uri', help='playlist')
     args = parser.parse_args()
-    main(args.username, args.playlist, args.playlist_owner, args.playlist_uri)
+    main(args.username, args.playlist)
